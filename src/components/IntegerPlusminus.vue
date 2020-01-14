@@ -35,6 +35,14 @@
         default: 1,
         type: Number
       },
+      stepIncrement: {
+        default: 0,
+        type: Number
+      },
+      stepDecrement: {
+        default: 0,
+        type: Number
+      },
       vertical: {
         default: false,
         type: Boolean
@@ -64,11 +72,11 @@
     computed: {
       canIncrement () {
         if (this.disabled) return false
-        return (this.max === undefined || ((this.intValue + this.step) <= this.max))
+        return (this.max === undefined || ((this.intValue + this.step + this.stepIncrement) <= this.max))
       },
       canDecrement () {
         if (this.disabled) return false
-        return ((this.intValue - this.step) >= this.min)
+        return ((this.intValue - this.step - this.stepDecrement) >= this.min)
       },
     },
     mounted () {
@@ -125,14 +133,14 @@
       },
       increment () {
         if (this.canIncrement) {
-          this.intValue = this.intValue + this.step
+          this.intValue = this.intValue + this.step + this.stepIncrement
           this.$emit('ipm-increment', this.intValue)
           this.$emit('input', this.intValue)
         }
       },
       decrement () {
         if (this.canDecrement) {
-          this.intValue = this.intValue - this.step
+          this.intValue = this.intValue - this.step - this.stepDecrement
           this.$emit('ipm-decrement', this.intValue)
           this.$emit('input', this.intValue)
         }
@@ -147,7 +155,7 @@
     },
     created () {
       this.intValue = this.value
-      if (this.step < 1) this.step = 1
+      if (this.step < 0) this.step = 0
       if (this.max < this.min) this.max = undefined
     }
   }
